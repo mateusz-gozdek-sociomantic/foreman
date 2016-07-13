@@ -60,7 +60,11 @@ module Foreman::Controller::SmartProxyAuth
       if request.env.has_key?(Setting[:ssl_client_cert_env]) && request.env[Setting[:ssl_client_cert_env]].present?
         logger.debug "Examining client certificate to extract dn and sans"
         cert_raw = request.env[Setting[:ssl_client_cert_env]]
-        certificate = CertificateExtract.new(cert_raw)
+        certificate_header     = "-----BEGIN CERTIFICATE-----\n"
+        certificate_body       =  cert_raw.to_s.split(/[ |\t]/)[2..-3].join("\n")
+        certificate_footer     = "\n-----END CERTIFICATE-----"
+        certificate_normalized = certificate_header + certificate_body + certificate_footer
+        certificate = CertificateExtract.new(certificate_normalized)
         logger.debug "Client sent certificate with subject '#{certificate.subject}' and subject alt names '#{certificate.subject_alternative_names.inspect}'"
       else
         dn = request.env[Setting[:ssl_client_dn_env]]
