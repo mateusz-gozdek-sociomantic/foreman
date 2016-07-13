@@ -2,7 +2,7 @@ module SSO
   class Apache < Base
     delegate :session, :to => :controller
 
-    CAS_USERNAME = 'REMOTE_USER'
+    CAS_USERNAME = 'HTTP_REMOTE_USER'
     ENV_TO_ATTR_MAPPING = {
       'REMOTE_USER_EMAIL'     => :mail,
       'REMOTE_USER_FIRSTNAME' => :firstname,
